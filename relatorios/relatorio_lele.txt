@@ -19,9 +19,11 @@ Atividades:
 - Conteúdo: Fundamentos da Programação | Acertos: 2 de 2
 - Conteúdo: Boas Práticas de Segurança Digital | Acertos: 0 de 2
 - Conteúdo: Boas Práticas de Segurança Digital | Acertos: 1 de 2
+- Conteúdo: Video pim | Acertos: 0 de 1
+- Conteúdo: Video pim | Acertos: 0 de 1
 
 Resumo:
-Total de Atividades: 15
-Média de Acertos: 0.8
+Total de Atividades: 17
+Média de Acertos: 0.71
 Maior Nota: 2
 Menor Nota: 0

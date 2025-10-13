@@ -1,0 +1,109 @@
+[
+    {
+        "materia": "Banco de dados",
+        "titulo": "Questionario sobre Banco de dados Iniciante",
+        "perguntas": [
+            {
+                "pergunta": "1. O que é uma Chave Primária (Primary Key) em um banco de dados relacional?",
+                "resposta_correta": "Um identificador único e não nulo para cada registro em uma tabela.",
+                "alternativas": [
+                    "Um identificador único e não nulo para cada registro em uma tabela.",
+                    "Uma chave que pode se repetir em várias tabelas.",
+                    "Um campo que armazena a data de criação do registro.",
+                    "Uma chave usada apenas para fazer backup dos dados."
+                ]
+            },
+            {
+                "pergunta": "2. Qual comando SQL é usado para visualizar dados de uma tabela?",
+                "resposta_correta": "SELECT",
+                "alternativas": [
+                    "SELECT",
+                    "UPDATE",
+                    "INSERT",
+                    "DELETE"
+                ]
+            },
+            {
+                "pergunta": "3. O que o acrônimo \"SQL\" significa?",
+                "resposta_correta": "Structured Query Language",
+                "alternativas": [
+                    "Structured Query Language",
+                    "Structured Question Language",
+                    "Simple Query Language",
+                    "Sequential Query Line"
+                ]
+            },
+            {
+                "pergunta": "4. Qual é a função principal da cláusula WHERE em uma consulta SQL?",
+                "resposta_correta": "Filtrar registros que atendem a uma condição específica.",
+                "alternativas": [
+                    "Filtrar registros que atendem a uma condição específica.",
+                    "Ordenar os resultados.",
+                    "Agrupar registros semelhantes.",
+                    "Contar o número total de registros."
+                ]
+            },
+            {
+                "pergunta": "5. Em um banco de dados, o que é um \"registro\" (ou linha)?",
+                "resposta_correta": "Um conjunto de dados relacionados que representam uma única entidade.",
+                "alternativas": [
+                    "Um conjunto de dados relacionados que representam uma única entidade.",
+                    "O nome de uma coluna em uma tabela.",
+                    "Um conjunto de colunas que descreve a estrutura da tabela.",
+                    "Um conjunto de tabelas relacionadas."
+                ]
+            },
+            {
+                "pergunta": "6. Qual comando SQL é utilizado para adicionar novos registros a uma tabela?",
+                "resposta_correta": "INSERT",
+                "alternativas": [
+                    "INSERT",
+                    "ADD RECORD",
+                    "UPDATE",
+                    "NEW"
+                ]
+            },
+            {
+                "pergunta": "7. O que é um SGBD (Sistema Gerenciador de Banco de Dados)?",
+                "resposta_correta": "Um software que gerencia, armazena e fornece acesso a bancos de dados.",
+                "alternativas": [
+                    "Um software que gerencia, armazena e fornece acesso a bancos de dados.",
+                    "Uma linguagem de programação para criar aplicações web.",
+                    "Um sistema operacional para servidores.",
+                    "Um software para criar planilhas."
+                ]
+            },
+            {
+                "pergunta": "8. Qual dos seguintes NÃO é um tipo de dado comum em SQL?",
+                "resposta_correta": "LOOP",
+                "alternativas": [
+                    "LOOP",
+                    "DATETIME",
+                    "VARCHAR",
+                    "BOOLEAN"
+                ]
+            },
+            {
+                "pergunta": "9. O que a cláusula ORDER BY faz em uma consulta SQL?",
+                "resposta_correta": "Ordena os resultados por uma ou mais colunas.",
+                "alternativas": [
+                    "Ordena os resultados por uma ou mais colunas.",
+                    "Agrupa os registros com valores iguais.",
+                    "Filtra os registros.",
+                    "Atualiza a ordem dos registros na tabela permanentemente."
+                ]
+            },
+            {
+                "pergunta": "10. O que caracteriza um banco de dados relacional?",
+                "resposta_correta": "Armazena dados na forma de tabelas, com relacionamentos entre elas.",
+                "alternativas": [
+                    "Armazena dados na forma de tabelas, com relacionamentos entre elas.",
+                    "É usado apenas para pequenos volumes de dados.",
+                    "Armazena dados em documentos JSON.",
+                    "Não possui um esquema fixo."
+                ]
+            }
+        ],
+        "professor_cpf": "38630096910"
+    }
+]

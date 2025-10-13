@@ -158,5 +158,21 @@
         "senha": "$2b$12$ZhPsw2gcpCW/.sjMGt53YuD7bGmAKBO07IbGmXF6STmCXypZaPIrC",
         "perfil": "Administrador",
         "palavra_chave": "Dica"
+    },
+    {
+        "cpf": "94557489501",
+        "nome": "propositalmentecinal",
+        "email": "po@g.com",
+        "senha": "$2b$12$Ifg3th2wi7p5yNmiyZULTeESQHDCTtZFliKbWElQby0YCgXLB5X1.",
+        "perfil": "Administrador",
+        "palavra_chave": "oi ne"
+    },
+    {
+        "cpf": "38630096910",
+        "nome": "Prof da Silva",
+        "email": "prof@g.com",
+        "senha": "$2b$12$FSoCsmWDkAEt6calBdx3D.eVoog9sIKNEruO4V9AaIT8666kl5vD2",
+        "perfil": "Professor",
+        "palavra_chave": "prof"
     }
 ]

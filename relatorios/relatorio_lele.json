@@ -92,11 +92,23 @@
             "conteudo": "Boas Pr\u00e1ticas de Seguran\u00e7a Digital",
             "acertos": 1,
             "total": 2
+        },
+        {
+            "cpf": "38630096810",
+            "conteudo": "Video pim",
+            "acertos": 0,
+            "total": 1
+        },
+        {
+            "cpf": "38630096810",
+            "conteudo": "Video pim",
+            "acertos": 0,
+            "total": 1
         }
     ],
     "resumo": {
-        "total_atividades": 15,
-        "media_acertos": 0.8,
+        "total_atividades": 17,
+        "media_acertos": 0.71,
         "maior_nota": 2,
         "menor_nota": 0
     }

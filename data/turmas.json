@@ -1,0 +1,11 @@
+[
+    {
+        "codigo": "Turma01",
+        "materia": "Banco de dados",
+        "professor_cpf": "38630096910",
+        "horario": "Segunda 08:00-09:30",
+        "alunos": [
+            "38630096810"
+        ]
+    }
+]
