@@ -1,22 +1,60 @@
-# ======= services/chatbot.py =======
+# services/chatbot.py
+import time
+
 def chatbot_ajuda():
-    print("\n=== Chatbot de Ajuda (FAQ) ===")
-    perguntas = {
-        "1": ("Como faço para me cadastrar?", "Vá até o menu principal e escolha 'Cadastrar usuário'. Preencha CPF, nome, e-mail, senha e perfil."),
-        "2": ("Esqueci minha senha, e agora?", "Escolha 'Esqueci minha senha' no menu principal e informe o CPF e a palavra-chave secreta cadastrada."),
-        "3": ("Como o professor cria uma turma?", "O professor acessa seu menu e escolhe 'Criar turma', informando a matéria e o horário. O sistema impede conflito de horário."),
-        "4": ("Posso estar em duas turmas ao mesmo tempo?", "Não. O sistema não permite matrícula de um aluno em duas turmas com o mesmo horário."),
-        "5": ("Quem cria as atividades/provas?", "Os professores criam atividades vinculadas às matérias que lecionam.")
-    }
+    while True:
+        print("\n=== 🤖 Chatbot de Ajuda ===")
+        print("1. Como faço login ou cadastro?")
+        print("2. Como estudar os conteúdos?")
+        print("3. Por que não consigo fazer a atividade?")
+        print("4. O que é a função de professor?")
+        print("5. Como é garantida a segurança dos meus dados?")
+        print("0. Voltar ao menu principal")
 
-    for k, v in perguntas.items():
-        print(f"{k}. {v[0]}")
+        opcao = input("Escolha uma pergunta: ")
 
-    escolha = input("\nDigite o número da dúvida para ver a resposta (ou 0 para voltar): ").strip()
-    if escolha == '0' or escolha == '':
-        return
-    if escolha in perguntas:
-        print(f"\n💬 {perguntas[escolha][1]}")
-    else:
-        print("Opção inválida.")
-    input("\nAperte Enter para voltar ao menu principal.")
+        respostas = {
+            '1': (
+                "\n🔹 Para fazer login, use seu email e senha cadastrados.\n"
+                "🔹 Se ainda não tem uma conta, escolha 'Fazer Cadastro' no menu principal.\n"
+                "🔹 Use uma senha com letras, números e símbolos para maior segurança."
+            ),
+            '2': (
+                "\n📘 Para estudar os conteúdos:\n"
+                "1. Acesse o menu do aluno.\n"
+                "2. Vá até 'Estudar conteúdo'.\n"
+                "3. Escolha a turma e o conteúdo desejado.\n"
+                "💡 Após a leitura, o sistema registra automaticamente sua visualização!"
+            ),
+            '3': (
+                "\n⚠️ Você só pode fazer atividades se:\n"
+                "- Estiver matriculado em uma turma;\n"
+                "- E já tiver estudado o conteúdo da matéria.\n"
+                "Se ainda não leu o conteúdo, vá até 'Estudar conteúdo' antes de tentar novamente."
+            ),
+            '4': (
+                "\n👨‍🏫 O perfil de professor é responsável por:\n"
+                "- Criar matérias e conteúdos;\n"
+                "- Cadastrar turmas e alunos;\n"
+                "- Criar atividades (questionários);\n"
+                "- Gerar relatórios de desempenho dos alunos.\n"
+                "Cada professor leciona apenas suas próprias matérias e turmas."
+            ),
+            '5': (
+                "\n🔒 A plataforma segue boas práticas de segurança:\n"
+                "- As senhas são armazenadas de forma protegida;\n"
+                "- Dados pessoais não são compartilhados;\n"
+                "- Incentiva-se o uso de senhas fortes e o cuidado com links suspeitos.\n"
+                "Esses conceitos fazem parte da LGPD (Lei Geral de Proteção de Dados)."
+            )
+        }
+
+        if opcao == '0':
+            print("\nVoltando ao menu principal...")
+            time.sleep(1)
+            break
+        elif opcao in respostas:
+            print(respostas[opcao])
+            input("\nPressione Enter para voltar ao Chatbot.")
+        else:
+            print("Opção inválida. Tente novamente.")

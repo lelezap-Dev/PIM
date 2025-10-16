@@ -3,6 +3,7 @@ import json
 from services.conteudos import carregar_conteudos
 import random
 from services.leitura import ja_visualizou_conteudo
+from services.professores import carregar_atividades, carregar_turmas, listar_conteudos_materia
 
 def carregar_resultados():
     try:
@@ -16,35 +17,74 @@ def salvar_resultados(resultados):
         json.dump(resultados, file, indent=4)
 
 def responder_conteudo(usuario):
-    conteudos = carregar_conteudos()
-    if not conteudos:
-        print('Nenhum conteúdo disponível.')
+    # agora as "atividades" são as avaliações criadas pelos professores
+    atividades = carregar_atividades()
+    if not atividades:
+        print('Nenhuma atividade disponível.')
         return
 
-    for i, c in enumerate(conteudos):
-        print(f"{i+1}. {c['titulo']} - {c['tema']}")
+    # listar atividades disponíveis para o aluno (filtrar por matrícula)
+    turmas = carregar_turmas()
+    # turmas em que o aluno está matriculado
+    turmas_do_aluno = [t for t in turmas if usuario['cpf'] in t.get('alunos', [])]
+    turma_codigos_aluno = {t['codigo'] for t in turmas_do_aluno}
+    materias_ids_aluno = {t['materia_id'] for t in turmas_do_aluno}
+
+    atividades_disponiveis = []
+    for a in atividades:
+        if a['turma_codigo']:
+            # atividade vinculada a turma específica: só alunos daquela turma podem ver
+            if a['turma_codigo'] in turma_codigos_aluno:
+                atividades_disponiveis.append(a)
+        else:
+            # atividade aberta para todas turmas da matéria: verifica se aluno tem turma dessa matéria
+            if a['materia_id'] in materias_ids_aluno:
+                atividades_disponiveis.append(a)
+
+    if not atividades_disponiveis:
+        print("Nenhuma atividade disponível para suas turmas ou matérias.")
+        return
+
+    print("\nAtividades disponíveis:")
+    for i, a in enumerate(atividades_disponiveis, 1):
+        print(f"{i}. {a['titulo']} | Matéria: {a['materia_nome']} | Turma: {a['turma_codigo'] or 'Todas'}")
+
     try:
-        escolha = int(input('Escolha o conteúdo: ')) - 1
-        if escolha < 0 or escolha >= len(conteudos):
-            print('Opção inválida.')
+        escolha = int(input("Escolha a atividade: ")) - 1
+        if escolha < 0 or escolha >= len(atividades_disponiveis):
+            print("Opção inválida.")
             return
     except ValueError:
-        print('Entrada inválida.')
+        print("Entrada inválida.")
         return
 
-    titulo = conteudos[escolha]['titulo']
-    if not ja_visualizou_conteudo(usuario['nome'], titulo):
-        print(f"Você ainda não visualizou o conteúdo '{titulo}'. Acesse-o antes de realizar a avaliação.")
+    atividade = atividades_disponiveis[escolha]
+
+    # --- Verificar se aluno leu conteúdo da matéria ---
+    conteudos_da_materia = listar_conteudos_materia(atividade['materia_id'])
+    # se não houver conteúdo cadastrado, bloquear (professor precisa criar conteúdo)
+    if not conteudos_da_materia:
+        print("Esta matéria ainda não possui conteúdo para estudo. Peça ao professor para adicionar conteúdos antes da atividade.")
         return
 
+    # verificar se aluno já visualizou pelo menos um título de conteúdo desta matéria
+    ja_leu_algum = False
+    for c in conteudos_da_materia:
+        if ja_visualizou_conteudo(usuario['nome'], c['titulo']):
+            ja_leu_algum = True
+            break
+    if not ja_leu_algum:
+        print("Você precisa estudar o conteúdo da matéria antes de fazer a atividade.")
+        return
+
+    # realizar a atividade
     pontuacao = 0
-    total = len(conteudos[escolha]['perguntas'])
+    total = len(atividade['perguntas'])
 
-    for p in conteudos[escolha]['perguntas']:
+    for p in atividade['perguntas']:
         print(f"\n{p['pergunta']}")
         alternativas_embaralhadas = p['alternativas'][:]
         random.shuffle(alternativas_embaralhadas)
-
         for i, alt in enumerate(alternativas_embaralhadas):
             print(f"{i+1}. {alt}")
         try:
@@ -55,10 +95,13 @@ def responder_conteudo(usuario):
             print('Resposta inválida.')
 
     print(f"\nVocê acertou {pontuacao}/{total}!")
+    # salvar resultado (com referência à matéria para relatórios)
     resultados = carregar_resultados()
     resultados.append({
         'cpf': usuario['cpf'],
-        'conteudo': titulo,
+        'atividade_id': atividade['id'],
+        'conteudo_materia_id': atividade['materia_id'],
+        'conteudo_materia_nome': atividade['materia_nome'],
         'acertos': pontuacao,
         'total': total
     })

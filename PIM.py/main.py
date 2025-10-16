@@ -7,69 +7,153 @@ from services.graficos import (
     gerar_grafico_distribuicao,
     gerar_grafico_por_conteudo
 )
-from services.relatorios import exportar_relatorio_txt, exportar_relatorio_json
 from services.sessoes import registrar_login, registrar_logout, exibir_sessoes_usuario, visualizar_conteudos_por_tema, listar_conteudos, editar_conteudo, listar_usuarios, excluir_usuario, editar_usuario, ranking_geral
 from services.certificados import gerar_certificado
 from services.professores import criar_materia, criar_turma, criar_atividade, listar_turmas_professor, matricular_aluno_em_turma, gerar_relatorio_turma
 from services.chatbot import chatbot_ajuda
+from services.professores import (
+    criar_materia, listar_materias_professor, editar_materia, excluir_materia,
+    adicionar_conteudo_na_materia,
+    criar_turma, listar_turmas_professor, matricular_aluno_em_turma,
+    criar_atividade, listar_atividades_professor, gerar_relatorio_turma
+)
+
+
+from services.professores import carregar_turmas, carregar_materias, listar_conteudos_materia
+from services.leitura import registrar_leitura, ja_visualizou_conteudo
+from services.quiz import responder_conteudo
+from services.relatorios import exibir_relatorio_aluno
 
 def menu_aluno(usuario):
     while True:
-        print('\n--- Menu do Aluno ---')
-        print('1. Visualizar conteúdos')
-        print('2. Realizar avaliações')
-        print('3. Ver seu desempenho')
-        print('4. Emitir certificado de curso')
-        print('5. Ver ranking dos alunos')
-        print('6. Sair')
+        print("\n--- Menu do Aluno ---")
+        print("1. Ver minhas turmas e matérias")
+        print("2. Estudar conteúdo")
+        print("3. Fazer atividades (após estudar)")
+        print("4. Ver desempenho")
+        print("5. Sair")
+        opcao = input("Escolha: ")
 
-        op = input('Escolha: ')
-
-        if op == '1':
-            visualizar_conteudos_por_tema(usuario['nome'])
-        elif op == '2':
+        if opcao == '1':
+            exibir_turmas_materias(usuario)
+        elif opcao == '2':
+            estudar_conteudo(usuario)
+        elif opcao == '3':
             responder_conteudo(usuario)
-        elif op == '3':
-            relatorio_pessoal(usuario['cpf'])
-        elif op == '4':
-            gerar_certificado(usuario)
-        elif op == '5':
-            ranking_geral()
-        elif op == '6':
-            registrar_logout(usuario['cpf'])
+        elif opcao == '4':
+            exibir_relatorio_aluno(usuario)
+        elif opcao == '5':
             break
         else:
-            print('Opção inválida.')
+            print("Opção inválida.")
+        
+def exibir_turmas_materias(usuario):
+    turmas = carregar_turmas()
+    minhas_turmas = [t for t in turmas if usuario['cpf'] in t.get('alunos', [])]
+
+    if not minhas_turmas:
+        print("Você ainda não está matriculado em nenhuma turma.")
+        input("Aperte Enter para voltar ao menu.")
+        return
+
+    print("\nSuas turmas e matérias:")
+    for i, t in enumerate(minhas_turmas, 1):
+        print(f"{i}. {t['codigo']} - {t['materia_nome']} | {t['horario']}")
+    input("\nAperte Enter para voltar ao menu.")
+
+def estudar_conteudo(usuario):
+    turmas = carregar_turmas()
+    minhas_turmas = [t for t in turmas if usuario['cpf'] in t.get('alunos', [])]
+
+    if not minhas_turmas:
+        print("Você não está matriculado em nenhuma turma.")
+        input("Aperte Enter para voltar.")
+        return
+
+    print("\nSuas turmas:")
+    for i, t in enumerate(minhas_turmas, 1):
+        print(f"{i}. {t['codigo']} - {t['materia_nome']}")
+    try:
+        escolha = int(input("Escolha uma turma para estudar: ")) - 1
+        if escolha < 0 or escolha >= len(minhas_turmas):
+            print("Opção inválida.")
+            return
+    except ValueError:
+        print("Entrada inválida.")
+        return
+
+    turma = minhas_turmas[escolha]
+    conteudos = listar_conteudos_materia(turma['materia_id'])
+    if not conteudos:
+        print("Ainda não há conteúdos disponíveis nesta matéria.")
+        input("Aperte Enter para voltar.")
+        return
+
+    print(f"\nConteúdos disponíveis em {turma['materia_nome']}:")
+    for i, c in enumerate(conteudos, 1):
+        status = "✅ Lido" if ja_visualizou_conteudo(usuario['nome'], c['titulo']) else "❌ Não lido"
+        print(f"{i}. {c['titulo']} [{status}]")
+
+    try:
+        escolha = int(input("Escolha um conteúdo para ler: ")) - 1
+        if escolha < 0 or escolha >= len(conteudos):
+            print("Opção inválida.")
+            return
+    except ValueError:
+        print("Entrada inválida.")
+        return
+
+    conteudo = conteudos[escolha]
+    print(f"\n=== {conteudo['titulo']} ===")
+    print(conteudo['texto'])
+    registrar_leitura(usuario['nome'], conteudo['titulo'])
+    input("\nLeitura concluída! Aperte Enter para voltar ao menu.")
+
 
 def menu_professor(usuario):
     while True:
-        print('\n--- Menu do Professor ---')
-        print('1. Criar matéria')
-        print('2. Criar turma')
-        print('3. Criar atividade (questionário)')
-        print('4. Listar minhas turmas')
-        print('5. Matricular aluno em turma')
-        print('6. Gerar relatório de turma')
-        print('7. Sair')
-
-        op = input('Escolha: ')
+        print("\n--- Menu do Professor ---")
+        print("1. Criar matéria")
+        print("2. Listar/Editar/Deletar matérias")
+        print("3. Adicionar conteúdo em matéria")
+        print("4. Criar turma")
+        print("5. Listar turmas")
+        print("6. Matricular aluno em turma")
+        print("7. Criar atividade (questionário)")
+        print("8. Listar minhas atividades")
+        print("9. Gerar relatório de turma")
+        print("10. Sair")
+        op = input("Escolha: ")
         if op == '1':
-            criar_materia(professor_cpf=usuario['cpf'])
+            criar_materia(usuario['cpf'])
         elif op == '2':
-            criar_turma(professor_cpf=usuario['cpf'])
+            print("Suas matérias:")
+            listar_materias_professor(usuario['cpf'])
+            sub = input("Deseja (e)ditar, (d)eletar ou (v)oltar? ").lower()
+            if sub == 'e':
+                editar_materia(usuario['cpf'])
+            elif sub == 'd':
+                excluir_materia(usuario['cpf'])
         elif op == '3':
-            criar_atividade(professor_cpf=usuario['cpf'])
+            adicionar_conteudo_na_materia(usuario['cpf'])
         elif op == '4':
-            listar_turmas_professor(professor_cpf=usuario['cpf'])
+            criar_turma(usuario['cpf'])
         elif op == '5':
-            matricular_aluno_em_turma()
+            listar_turmas_professor(usuario['cpf'])
         elif op == '6':
-            gerar_relatorio_turma(professor_cpf=usuario['cpf'])
+            matricular_aluno_em_turma()
         elif op == '7':
-            registrar_logout(usuario['cpf'])
+            criar_atividade(usuario['cpf'])
+        elif op == '8':
+            listar_atividades_professor(usuario['cpf'])
+        elif op == '9':
+            from services.relatorios import gerar_relatorio_turma
+            gerar_relatorio_turma(usuario['cpf'])
+        elif op == '10':
             break
         else:
-            print('Opção inválida.')
+            print("Opção inválida.")
+
 
 # ======= Submenus para administrador (mantidos) =======
 def crud_usuarios():
@@ -120,7 +204,7 @@ def menu_administrador(usuario):
         print('\n--- Menu do Administrador ---')
         print('1. Gerenciar conteúdos')
         print('2. Gerenciar usuários')
-        print('3. Ver relatório de usuário')
+        print('3. Relatório do Sistema')
         print('4. Gráficos de desempenho')
         print('5. Exportar relatórios')
         print('6. Ver sessões de um usuário')
@@ -133,8 +217,8 @@ def menu_administrador(usuario):
         elif op == '2':
             crud_usuarios()
         elif op == '3':
-            cpf = input('Digite o CPF do usuário: ')
-            relatorio_usuario(cpf)
+            from services.relatorios import relatorio_administrador
+            relatorio_administrador()
         elif op == '4':
             gerar_grafico_media_usuarios()
             gerar_grafico_distribuicao()
@@ -179,7 +263,6 @@ if __name__ == '__main__':
         elif escolha == '4':
             chatbot_ajuda()
         elif escolha == '5':
-            # tenta encerrar sessão atual (se existir)
             try:
                 registrar_logout(usuario['cpf'])
             except:

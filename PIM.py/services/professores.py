@@ -1,208 +1,377 @@
-# ======= services/professores.py =======
-import json, os
-from services.usuarios import carregar_usuarios, salvar_usuarios
-from services.quiz import carregar_resultados
-from services.conteudos import carregar_conteudos
-from services.leitura import carregar_leituras
+# services/professores.py
+import json
+import os
+import uuid
+from datetime import datetime
+from services.usuarios import carregar_usuarios
+from services.leitura import registrar_leitura, ja_visualizou_conteudo
 
-# Helpers para persistência
-def carregar_json(path):
+# -----------------------
+# Helpers para JSON
+# -----------------------
+def _carregar(arquivo):
     try:
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(arquivo, 'r', encoding='utf-8') as f:
             return json.load(f)
     except:
         return []
 
-def salvar_json(path, dados):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, 'w', encoding='utf-8') as f:
+def _salvar(arquivo, dados):
+    os.makedirs('data', exist_ok=True)
+    with open(arquivo, 'w', encoding='utf-8') as f:
         json.dump(dados, f, indent=4, ensure_ascii=False)
 
-# Materias (disciplinas)
+# -----------------------
+# Matérias (CRUD)
+# -----------------------
+MATERIAS_FILE = 'data/materias.json'
+TURMAS_FILE = 'data/turmas.json'
+ATIVIDADES_FILE = 'data/atividades.json'
+
 def carregar_materias():
-    return carregar_json('data/materias.json')
+    return _carregar(MATERIAS_FILE)
 
 def salvar_materias(materias):
-    salvar_json('data/materias.json', materias)
+    _salvar(MATERIAS_FILE, materias)
 
-def criar_materia(professor_cpf=None):
+def criar_materia(professor_cpf):
     materias = carregar_materias()
     nome = input('Nome da matéria: ').strip()
-    if not nome:
-        print('Nome inválido.')
-        return
-    if any(m['nome'].lower() == nome.lower() for m in materias):
-        print('Matéria já existe.')
-        return
-    materias.append({'nome': nome, 'professor_cpf': professor_cpf})
+    descricao = input('Descrição breve da matéria: ').strip()
+    # id único
+    mid = str(uuid.uuid4())[:8]
+    materia = {
+        "id": mid,
+        "professor_cpf": professor_cpf,
+        "nome": nome,
+        "descricao": descricao,
+        "conteudos": []  # lista de conteúdos {titulo,texto}
+    }
+    materias.append(materia)
     salvar_materias(materias)
-    print('Matéria criada com sucesso!')
+    print(f"✅ Matéria '{nome}' criada com ID {mid}.")
 
-# Turmas
+def listar_materias_professor(professor_cpf):
+    materias = [m for m in carregar_materias() if m['professor_cpf'] == professor_cpf]
+    if not materias:
+        print("Nenhuma matéria cadastrada por você.")
+        return []
+    for i, m in enumerate(materias, 1):
+        print(f"{i}. {m['nome']} (ID: {m['id']}) - {m['descricao']}")
+    return materias
+
+def selecionar_materia_do_professor(professor_cpf):
+    materias = listar_materias_professor(professor_cpf)
+    if not materias:
+        return None
+    try:
+        escolha = int(input("Escolha o número da matéria: ")) - 1
+        if escolha < 0 or escolha >= len(materias):
+            print("Opção inválida.")
+            return None
+        return materias[escolha]
+    except ValueError:
+        print("Entrada inválida.")
+        return None
+
+def editar_materia(professor_cpf):
+    materias = carregar_materias()
+    m = selecionar_materia_do_professor(professor_cpf)
+    if not m:
+        return
+    print(f"Editando matéria: {m['nome']}")
+    novo_nome = input("Novo nome (Enter para manter): ").strip() or m['nome']
+    nova_desc = input("Nova descrição (Enter para manter): ").strip() or m['descricao']
+    for mm in materias:
+        if mm['id'] == m['id']:
+            mm['nome'] = novo_nome
+            mm['descricao'] = nova_desc
+            break
+    salvar_materias(materias)
+    print("✅ Matéria atualizada.")
+
+def excluir_materia(professor_cpf):
+    materias = carregar_materias()
+    m = selecionar_materia_do_professor(professor_cpf)
+    if not m:
+        return
+    confirm = input(f"Tem certeza que deseja excluir a matéria '{m['nome']}' e todo seu conteúdo/atividades? (s/n): ").lower()
+    if confirm != 's':
+        print("Exclusão cancelada.")
+        return
+    materias = [mm for mm in materias if mm['id'] != m['id']]
+    salvar_materias(materias)
+
+    # também remover turmas e atividades vinculadas
+    turmas = carregar_turmas()
+    turmas = [t for t in turmas if t['materia_id'] != m['id']]
+    salvar_turmas(turmas)
+
+    atividades = carregar_atividades()
+    atividades = [a for a in atividades if a['materia_id'] != m['id']]
+    salvar_atividades(atividades)
+
+    print("✅ Matéria e itens vinculados removidos.")
+
+# -----------------------
+# Conteúdos dentro de matéria
+# -----------------------
+def adicionar_conteudo_na_materia(professor_cpf):
+    materias = carregar_materias()
+    m = selecionar_materia_do_professor(professor_cpf)
+    if not m:
+        return
+    titulo = input("Título do conteúdo: ").strip()
+    texto = input("Texto/descrição do conteúdo (pode ser curto): ").strip()
+    if not titulo or not texto:
+        print("Título e texto obrigatórios.")
+        return
+    for mm in materias:
+        if mm['id'] == m['id']:
+            mm['conteudos'].append({"id": str(uuid.uuid4())[:8], "titulo": titulo, "texto": texto})
+            break
+    salvar_materias(materias)
+    print(f"✅ Conteúdo '{titulo}' adicionado à matéria '{m['nome']}'.")
+
+def listar_conteudos_materia(materia_id):
+    materias = carregar_materias()
+    m = next((x for x in materias if x['id'] == materia_id), None)
+    if not m:
+        return []
+    return m.get('conteudos', [])
+
+# -----------------------
+# Turmas (CRUD e matrícula)
+# -----------------------
 def carregar_turmas():
-    return carregar_json('data/turmas.json')
+    return _carregar(TURMAS_FILE)
 
 def salvar_turmas(turmas):
-    salvar_json('data/turmas.json', turmas)
+    _salvar(TURMAS_FILE, turmas)
 
 def criar_turma(professor_cpf):
-    turmas = carregar_turmas()
-    materias = carregar_materias()
+    materias = [m for m in carregar_materias() if m['professor_cpf'] == professor_cpf]
     if not materias:
-        print('Não há matérias cadastradas. Professor deve criar uma matéria primeiro.')
+        print("Você precisa criar uma matéria antes de criar turmas.")
         return
-    print('Matérias disponíveis:')
+    print("Escolha a matéria para esta turma:")
     for i, m in enumerate(materias, 1):
-        print(f"{i}. {m['nome']}")
+        print(f"{i}. {m['nome']} (ID: {m['id']})")
     try:
-        escolha = int(input('Escolha a matéria por número: ')) - 1
-    except:
-        print('Entrada inválida.')
-        return
-    if escolha < 0 or escolha >= len(materias):
-        print('Opção inválida.')
-        return
-    materia = materias[escolha]['nome']
-    codigo = input('Código da turma (ex: TURMA001): ').strip()
-    horario = input('Horário da turma (ex: Segunda 10:00-12:00): ').strip()
-    # Verificar conflito de horário para o professor
-    for t in turmas:
-        if t['professor_cpf'] == professor_cpf and t['horario'] == horario:
-            print('Conflito: você já tem uma turma nesse horário.')
+        escolha = int(input("Escolha: ")) - 1
+        if escolha < 0 or escolha >= len(materias):
+            print("Opção inválida.")
             return
-    turmas.append({
-        'codigo': codigo,
-        'materia': materia,
-        'professor_cpf': professor_cpf,
-        'horario': horario,
-        'alunos': []
-    })
+    except ValueError:
+        print("Entrada inválida.")
+        return
+    materia = materias[escolha]
+    codigo = input("Código da turma (ex: TURMA001): ").strip()
+    horario = input("Horário (ex: Seg 10:00-12:00): ").strip()
+
+    # checar conflito de horário para professor
+    turmas = carregar_turmas()
+    conflitos = [t for t in turmas if t['professor_cpf'] == professor_cpf and t['horario'] == horario]
+    if conflitos:
+        print("Você já tem uma turma nesse horário. Escolha outro horário.")
+        return
+
+    turma = {
+        "codigo": codigo,
+        "materia_id": materia['id'],
+        "materia_nome": materia['nome'],
+        "professor_cpf": professor_cpf,
+        "horario": horario,
+        "alunos": []  # lista de cpfs
+    }
+    turmas.append(turma)
     salvar_turmas(turmas)
-    print('Turma criada com sucesso!')
+    print(f"✅ Turma '{codigo}' criada para a matéria '{materia['nome']}' no horário {horario}.")
 
 def listar_turmas_professor(professor_cpf):
-    turmas = carregar_turmas()
-    minhas = [t for t in turmas if t['professor_cpf'] == professor_cpf]
-    if not minhas:
-        print('Você não tem turmas cadastradas.')
-        return
-    for i, t in enumerate(minhas, 1):
-        print(f"{i}. {t['codigo']} | {t['materia']} | {t['horario']} | Alunos: {len(t['alunos'])}")
+    turmas = [t for t in carregar_turmas() if t['professor_cpf'] == professor_cpf]
+    if not turmas:
+        print("Nenhuma turma encontrada.")
+        return []
+    for i, t in enumerate(turmas, 1):
+        print(f"{i}. {t['codigo']} - {t['materia_nome']} | {t['horario']} | Alunos: {len(t['alunos'])}")
+    return turmas
 
-# Matrícula de aluno em turma (respeitando conflitos de horário)
 def matricular_aluno_em_turma():
     turmas = carregar_turmas()
-    usuarios = carregar_usuarios()
-    cpf_aluno = input('CPF do aluno a matricular: ')
-    aluno = next((u for u in usuarios if u['cpf'] == cpf_aluno and u['perfil'] == 'Aluno'), None)
-    if not aluno:
-        print('Aluno não encontrado ou não é perfil Aluno.')
-        return
     if not turmas:
-        print('Nenhuma turma disponível.')
+        print("Nenhuma turma disponível.")
         return
-    print('Turmas disponíveis:')
+    from services.usuarios import carregar_usuarios
+    usuarios = carregar_usuarios()
+    cpf = input("CPF do aluno a matricular: ").strip()
+    aluno = next((u for u in usuarios if u['cpf'] == cpf and u['perfil'] == 'Aluno'), None)
+    if not aluno:
+        print("Aluno não encontrado ou perfil não é Aluno.")
+        return
+    print("Turmas disponíveis:")
     for i, t in enumerate(turmas, 1):
-        print(f"{i}. {t['codigo']} | {t['materia']} | {t['horario']}")
+        print(f"{i}. {t['codigo']} - {t['materia_nome']} | {t['horario']}")
     try:
-        escolha = int(input('Escolha a turma por número: ')) - 1
-    except:
-        print('Entrada inválida.')
-        return
-    if escolha < 0 or escolha >= len(turmas):
-        print('Opção inválida.')
+        escolha = int(input("Escolha a turma: ")) - 1
+        if escolha < 0 or escolha >= len(turmas):
+            print("Opção inválida.")
+            return
+    except ValueError:
+        print("Entrada inválida.")
         return
     turma = turmas[escolha]
-    # Verificar se aluno já tem turma no mesmo horário
-    for t in turmas:
-        if cpf_aluno in t.get('alunos', []) and t['horario'] == turma['horario']:
-            print('Conflito: aluno já matriculado em outra turma nesse horário.')
-            return
-    if cpf_aluno in turma['alunos']:
-        print('Aluno já matriculado nessa turma.')
-        return
-    turma['alunos'].append(cpf_aluno)
-    salvar_turmas(turmas)
-    print('Aluno matriculado com sucesso!')
 
-# Atividades / Questionários
+    # verificar se aluno já tem turma em mesmo horário
+    turmas_aluno = [t for t in turmas if cpf in t.get('alunos', [])]
+    if any(t['horario'] == turma['horario'] for t in turmas_aluno):
+        print("Aluno já está matriculado em outra turma no mesmo horário.")
+        return
+
+    if cpf not in turma['alunos']:
+        turma['alunos'].append(cpf)
+        salvar_turmas(turmas)
+        print(f"✅ Aluno {cpf} matriculado na turma {turma['codigo']}.")
+    else:
+        print("Aluno já matriculado nessa turma.")
+
+# -----------------------
+# Atividades (questionários) vinculadas a matéria e/ou turma
+# -----------------------
 def carregar_atividades():
-    return carregar_json('data/atividades.json')
+    return _carregar(ATIVIDADES_FILE)
 
 def salvar_atividades(atividades):
-    salvar_json('data/atividades.json', atividades)
+    _salvar(ATIVIDADES_FILE, atividades)
 
 def criar_atividade(professor_cpf):
-    materias = carregar_materias()
+    materias = [m for m in carregar_materias() if m['professor_cpf'] == professor_cpf]
     if not materias:
-        print('Nenhuma matéria disponível.')
+        print("Você precisa criar uma matéria antes de criar atividades.")
         return
-    # Filtra matérias do professor (se desejar restringir)
-    minhas = [m for m in materias if m.get('professor_cpf') in (None, professor_cpf, '') or m.get('professor_cpf') == professor_cpf]
-    if not minhas:
-        print('Você não tem matérias associadas para criar atividade.')
-        return
-    print('Matérias disponíveis:')
-    for i, m in enumerate(minhas, 1):
-        print(f"{i}. {m['nome']}")
+    print("Escolha a matéria para a atividade:")
+    for i, m in enumerate(materias, 1):
+        print(f"{i}. {m['nome']} (ID: {m['id']})")
     try:
-        escolha = int(input('Escolha a matéria por número: ')) - 1
-    except:
-        print('Entrada inválida.')
+        escolha = int(input("Escolha: ")) - 1
+        if escolha < 0 or escolha >= len(materias):
+            print("Opção inválida.")
+            return
+    except ValueError:
+        print("Entrada inválida.")
         return
-    if escolha < 0 or escolha >= len(minhas):
-        print('Opção inválida.')
-        return
-    materia = minhas[escolha]['nome']
-    titulo = input('Título da atividade: ').strip()
+    materia = materias[escolha]
+
+    # opcional: vincular a turma específica (ou deixar aberta para todas as turmas dessa matéria)
+    turmas_prof = [t for t in carregar_turmas() if t['professor_cpf'] == professor_cpf and t['materia_id'] == materia['id']]
+    turma_codigo = None
+    if turmas_prof:
+        print("Deseja vincular a atividade a uma turma específica?")
+        print("0. Não (disponível para todas as turmas desta matéria)")
+        for i, tr in enumerate(turmas_prof, 1):
+            print(f"{i}. {tr['codigo']} - {tr['horario']}")
+        try:
+            escolha_t = int(input("Escolha: "))
+            if escolha_t == 0:
+                turma_codigo = None
+            else:
+                turma_codigo = turmas_prof[escolha_t - 1]['codigo']
+        except ValueError:
+            turma_codigo = None
+
+    titulo = input("Título da atividade: ").strip()
     perguntas = []
     while True:
-        pergunta = input('Digite uma pergunta (ou Enter para finalizar): ').strip()
-        if not pergunta:
+        p = input("Digite a pergunta (ou Enter para finalizar): ").strip()
+        if not p:
             break
-        resposta = input('Resposta correta: ').strip()
-        alternativas = [resposta]
+        cor = input("Resposta correta: ").strip()
+        alternativas = [cor]
         for i in range(3):
-            alt = input(f'Digite outra alternativa ({i+1}/3): ').strip()
+            alt = input(f"Alternativa {i+1}: ").strip()
             alternativas.append(alt)
-        perguntas.append({'pergunta': pergunta, 'resposta_correta': resposta, 'alternativas': alternativas})
-    if not perguntas:
-        print('Atividade precisa ter pelo menos uma pergunta.')
-        return
-    atividades = carregar_atividades()
-    atividades.append({'materia': materia, 'titulo': titulo, 'perguntas': perguntas, 'professor_cpf': professor_cpf})
-    salvar_atividades(atividades)
-    print('Atividade criada com sucesso!')
+        perguntas.append({
+            "pergunta": p,
+            "resposta_correta": cor,
+            "alternativas": alternativas
+        })
 
-# Relatório de turma
+    atividade = {
+        "id": str(uuid.uuid4())[:8],
+        "materia_id": materia['id'],
+        "materia_nome": materia['nome'],
+        "turma_codigo": turma_codigo,  # None => disponível para todas as turmas da matéria
+        "titulo": titulo,
+        "perguntas": perguntas,
+        "criada_por": professor_cpf,
+        "criada_em": datetime.now().isoformat()
+    }
+
+    atividades = carregar_atividades()
+    atividades.append(atividade)
+    salvar_atividades(atividades)
+    print(f"✅ Atividade '{titulo}' criada para a matéria '{materia['nome']}' (turma: {turma_codigo or 'todas'}).")
+
+def listar_atividades_professor(professor_cpf):
+    atividades = [a for a in carregar_atividades() if a['criada_por'] == professor_cpf]
+    if not atividades:
+        print("Nenhuma atividade encontrada.")
+        return []
+    for i, a in enumerate(atividades, 1):
+        print(f"{i}. {a['titulo']} | Matéria: {a['materia_nome']} | Turma: {a['turma_codigo'] or 'Todas'}")
+    return atividades
+
+# -----------------------
+# Relatório de Turma (APENAS para as matérias/turmas do professor)
+# -----------------------
 def gerar_relatorio_turma(professor_cpf):
-    turmas = carregar_turmas()
-    resultados = carregar_resultados()
-    usuarios = carregar_usuarios()
-    minhas = [t for t in turmas if t['professor_cpf'] == professor_cpf]
-    if not minhas:
-        print('Nenhuma turma encontrada.')
+    
+    from services.quiz import carregar_resultados
+    
+    turmas = [t for t in carregar_turmas() if t['professor_cpf'] == professor_cpf]
+    if not turmas:
+        print("Você não possui turmas cadastradas.")
         return
-    for i, t in enumerate(minhas, 1):
-        print(f"{i}. {t['codigo']} | {t['materia']} | {t['horario']}")
+
+    print("Suas turmas:")
+    for i, t in enumerate(turmas, 1):
+        print(f"{i}. {t['codigo']} - {t['materia_nome']} | {t['horario']}")
+
     try:
-        escolha = int(input('Escolha a turma por número para gerar relatório: ')) - 1
-    except:
-        print('Entrada inválida.')
+        escolha = int(input("Escolha a turma para gerar relatório: ")) - 1
+        if escolha < 0 or escolha >= len(turmas):
+            print("Opção inválida.")
+            return
+    except ValueError:
+        print("Entrada inválida.")
         return
-    if escolha < 0 or escolha >= len(minhas):
-        print('Opção inválida.')
+    turma = turmas[escolha]
+
+    # Carregar resultados e filtrar por alunos desta turma e pela matéria da turma
+    resultados = carregar_resultados()
+    alunos_turma = set(turma.get('alunos', []))
+    resultados_filtrados = [r for r in resultados if r['cpf'] in alunos_turma and r.get('conteudo_materia_id') == turma['materia_id']]
+
+    # Se as atividades foram salvas com 'conteudo_materia_id', usamos isso; senão tentamos usar título->materia_nome
+    # Agrupar por aluno
+    from services.usuarios import carregar_usuarios
+    usuarios = carregar_usuarios()
+    cpf_to_nome = {u['cpf']: u['nome'] for u in usuarios}
+
+    if not resultados_filtrados:
+        print("Nenhum resultado encontrado para esta turma/atividade.")
         return
-    turma = minhas[escolha]
-    print(f"\n📋 Relatório da Turma {turma['codigo']} - {turma['materia']}")
-    if not turma.get('alunos'):
-        print('Nenhum aluno matriculado.')
-        return
-    for cpf in turma['alunos']:
-        nome = next((u['nome'] for u in usuarios if u['cpf'] == cpf), cpf)
-        res = [r for r in resultados if r['cpf'] == cpf]
-        if not res:
-            print(f"- {nome} ({cpf}): Sem registros de atividades")
-            continue
-        acertos = [r['acertos'] for r in res]
-        print(f"- {nome} ({cpf}): Atividades: {len(res)} | Média de acertos: {round(sum(acertos)/len(acertos),2)}")
+
+    print(f"\n📋 Relatório da Turma {turma['codigo']} - Matéria: {turma['materia_nome']}")
+    por_aluno = {}
+    for r in resultados_filtrados:
+        nome = cpf_to_nome.get(r['cpf'], r['cpf'])
+        if nome not in por_aluno:
+            por_aluno[nome] = {'acertos': 0, 'total': 0, 'atividades': 0}
+        por_aluno[nome]['acertos'] += r['acertos']
+        por_aluno[nome]['total'] += r['total']
+        por_aluno[nome]['atividades'] += 1
+
+    for nome, stats in por_aluno.items():
+        media = round((stats['acertos'] / stats['total']) * 10, 2) if stats['total'] > 0 else 0
+        print(f"- {nome}: Atividades: {stats['atividades']} | Média (0-10): {media}")
