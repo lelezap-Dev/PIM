@@ -1,0 +1,113 @@
+[
+    {
+        "id": "f0afc5f4",
+        "materia_id": "0565b6f5",
+        "materia_nome": "Banco de dados",
+        "turma_codigo": "TurmaBD",
+        "titulo": "Banco de Dados - Basico ao Avançado",
+        "perguntas": [
+            {
+                "pergunta": "Qual é o comando SQL usado para visualizar os  dados de uma tabela?",
+                "resposta_correta": "SELECT",
+                "alternativas": [
+                    "SELECT",
+                    "UPDATE",
+                    "FETCH",
+                    "GET"
+                ]
+            },
+            {
+                "pergunta": "Em um banco de dados relacional, o que é uma Chave Estrangeira (FOREIGN KEY)?",
+                "resposta_correta": "Um atributo que referencia a chave primária de outra tabela para estabelecer um relacionamento",
+                "alternativas": [
+                    "Um atributo que referencia a chave primária de outra tabela para estabelecer um relacionamento",
+                    "Uma chave que é usada para criptografar os dados da tabela",
+                    "Uma chave que identifica unicamente cada registro em uma tabela",
+                    "A chave principal usada para ordenar os dados fisicamente no disco"
+                ]
+            },
+            {
+                "pergunta": "Qual conceito de banco de dados garante que todas as operações de uma transação sejam concluídas com sucesso, ou, em caso de falha, nenhuma delas seja aplicada?",
+                "resposta_correta": "c) Atomicidade (Atomicity)",
+                "alternativas": [
+                    "c) Atomicidade (Atomicity)",
+                    "Consistência (Consistency)",
+                    "Isolamento (Isolation)",
+                    "Durabilidade (Durability)"
+                ]
+            },
+            {
+                "pergunta": "Qual comando SQL é utilizado para inserir novos registros em uma tabela?",
+                "resposta_correta": "INSERT INTO",
+                "alternativas": [
+                    "INSERT INTO",
+                    "ADD INTO",
+                    "ADD RECORD",
+                    "NEW RECORD"
+                ]
+            },
+            {
+                "pergunta": "O que significa a propriedade \"D\" (Durabilidade) no acrônimo ACID?",
+                "resposta_correta": "Que as transações executadas com sucesso são permanentemente salvas, mesmo em caso de falha do sistema",
+                "alternativas": [
+                    "Que as transações executadas com sucesso são permanentemente salvas, mesmo em caso de falha do sistema",
+                    "Que os dados devem estar consistentes ao início e ao fim de uma transação",
+                    "Que as transações devem ser executadas de forma isolada umas das outras",
+                    "Que uma transação deve ser totalmente concluída ou totalmente revertida"
+                ]
+            },
+            {
+                "pergunta": "Em um ambiente com alta concorrência, o fenômeno onde duas transações tentam atualizar o mesmo dado, mas leem o valor antigo antes de uma ser confirmada pela outra, resultando em uma atualização incorreta, é conhecido como:",
+                "resposta_correta": "Lost Update",
+                "alternativas": [
+                    "Lost Update",
+                    "Dirty Read",
+                    "Phantom Read",
+                    "Non-Repeatable Read"
+                ]
+            },
+            {
+                "pergunta": "Qual tipo de relacionamento é representado quando um registro em uma tabela A pode estar associado a vários registros em uma tabela B, e um registro na tabela B está associado a apenas um registro na tabela A?",
+                "resposta_correta": "Relacionamento Um para Muitos (1:N)",
+                "alternativas": [
+                    "Relacionamento Um para Muitos (1:N)",
+                    "Relacionamento Um para Um (1:1)",
+                    "Relacionamento Muitos para Muitos (N:N)",
+                    "Relacionamento Polimórfico"
+                ]
+            },
+            {
+                "pergunta": "Qual comando DDL (Data Definition Language) é usado para modificar a estrutura de uma tabela existente, como adicionar, modificar ou excluir uma coluna?",
+                "resposta_correta": "ALTER TABLE",
+                "alternativas": [
+                    "ALTER TABLE",
+                    "UPDATE",
+                    "CHANGE",
+                    "MODIFY TABLE"
+                ]
+            },
+            {
+                "pergunta": "Qual é o propósito principal de um LEFT JOIN em SQL?",
+                "resposta_correta": "Retornar todos os registros da tabela da esquerda, mesmo os que não têm correspondência na tabela da direita",
+                "alternativas": [
+                    "Retornar todos os registros da tabela da esquerda, mesmo os que não têm correspondência na tabela da direita",
+                    "Retornar apenas os registros que possuem correspondência em ambas as tabelas",
+                    "Retornar todos os registros da tabela da direita, independentemente de terem correspondência",
+                    "Retornar apenas o primeiro registro correspondente de cada tabela"
+                ]
+            },
+            {
+                "pergunta": "Em modelagem dimensional (Data Warehousing), um esquema em estrela é caracterizado por:",
+                "resposta_correta": "Possuir uma única tabela de fatos grande no centro, conectada a várias tabelas de dimensões desnormalizadas",
+                "alternativas": [
+                    "Possuir uma única tabela de fatos grande no centro, conectada a várias tabelas de dimensões desnormalizadas",
+                    "Possuir várias tabelas de fatos interconectadas por dimensões conformadas",
+                    "Organizar os dados em uma estrutura de grafo para consultas complexas",
+                    "Utilizar exclusivamente chaves surrogadas para todas as suas dimensões"
+                ]
+            }
+        ],
+        "criada_por": "38630096910",
+        "criada_em": "2025-11-06 09:59:36"
+    }
+]

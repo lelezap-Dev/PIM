@@ -12,7 +12,7 @@
         "nome": "admin",
         "email": "admin@g.com",
         "senha": "$2b$12$ylhdSNq0D40u9vN91rLxF.dWSCf6O6aJekkQzMVyLy0goLDvTDrJ.",
-        "perfil": "Administrador"
+        "perfil": "Secretaria"
     },
     {
         "cpf": "12345678900",
@@ -26,7 +26,7 @@
         "nome": "admin",
         "email": "admin@g.com",
         "senha": "$2b$12$1eaermySkQc2OGnvl523c.FYjIwoqA4LE9SBFi6GZRf/gYq45lf6K",
-        "perfil": "Administrador"
+        "perfil": "Secretaria"
     },
     {
         "cpf": "11111111111",
@@ -40,21 +40,21 @@
         "nome": "bizantino",
         "email": "biza@slk.com",
         "senha": "$2b$12$3ue4gEA8mWIV.DQjAKrDUeqcNsTHXCSynOMiQ/BV/UXb.Sqx67ph.",
-        "perfil": "Administrador"
+        "perfil": "Secretaria"
     },
     {
         "cpf": "88888888888",
         "nome": "adminzin",
         "email": "lele@g.com",
         "senha": "$2b$12$yzKOEXGli88mHkBHhYMqR.8.r0gMnJlJruFcjN/E/iLp1dHxqSM3W",
-        "perfil": "Administrador"
+        "perfil": "Secretaria"
     },
     {
         "cpf": "94557489591",
         "nome": "superADM",
         "email": "adm@g.com",
         "senha": "$2b$12$2JzP3XacF/3IAqB0nglCxO75/IFOnhJifm9EJCGhKp.yjOUCSvAne",
-        "perfil": "Administrador",
+        "perfil": "Secretaria",
         "palavra_chave": "TESTE"
     },
     {
@@ -69,7 +69,7 @@
         "nome": "Borges",
         "email": "Borges@gmail.com",
         "senha": "$2b$12$HZt0G.pYNso0Qh4JNzypAusPr/6kJ6DAuhpyUaZn8g0PJTfdgnzES",
-        "perfil": "Administrador"
+        "perfil": "Secretaria"
     },
     {
         "cpf": "38630096812",
@@ -108,7 +108,7 @@
         "nome": "admPP",
         "email": "adm@gmail.com",
         "senha": "$2b$12$OYgGSCCIQRTa8NOnHozndujzfOxYXdiap6NkaK.KVzhkWEjZoZiEm",
-        "perfil": "Administrador",
+        "perfil": "Secretaria",
         "palavra_chave": "Dica"
     },
     {
@@ -132,7 +132,7 @@
         "nome": "admTeste",
         "email": "adm@gmail.com",
         "senha": "$2b$12$PNXlZS38izXPZZaZ9X0oTOVD2.TomKRjfI/AvuWg6ZhIJdOiV8/Ia",
-        "perfil": "Administrador",
+        "perfil": "Secretaria",
         "palavra_chave": "Dica"
     },
     {
@@ -156,7 +156,7 @@
         "nome": "admTeste",
         "email": "admteste@gmail.com",
         "senha": "$2b$12$ZhPsw2gcpCW/.sjMGt53YuD7bGmAKBO07IbGmXF6STmCXypZaPIrC",
-        "perfil": "Administrador",
+        "perfil": "Secretaria",
         "palavra_chave": "Dica"
     },
     {
@@ -164,7 +164,7 @@
         "nome": "propositalmentecinal",
         "email": "po@g.com",
         "senha": "$2b$12$Ifg3th2wi7p5yNmiyZULTeESQHDCTtZFliKbWElQby0YCgXLB5X1.",
-        "perfil": "Administrador",
+        "perfil": "Secretaria",
         "palavra_chave": "oi ne"
     },
     {
@@ -174,5 +174,21 @@
         "senha": "$2b$12$FSoCsmWDkAEt6calBdx3D.eVoog9sIKNEruO4V9AaIT8666kl5vD2",
         "perfil": "Professor",
         "palavra_chave": "prof"
+    },
+    {
+        "cpf": "38630096710",
+        "nome": "pomba silva",
+        "email": "pomba@g.com",
+        "senha": "$2b$12$wE0LAph2WN85PO18xDJ5lOQPe9MqCsjEExaW6jbGu.WlRyqgE5/LK",
+        "perfil": "Secretaria",
+        "palavra_chave": "oi ne"
+    },
+    {
+        "cpf": "38630096610",
+        "nome": "teste",
+        "email": "pol@g.com",
+        "senha": "$2b$12$skJFCceAzcgEU6/VStj7pulP68xTYbNoNMeNtNypWSD7OV9i3UBe6",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
     }
 ]

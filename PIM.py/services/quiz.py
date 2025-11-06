@@ -70,11 +70,13 @@ def responder_conteudo(usuario):
     # verificar se aluno já visualizou pelo menos um título de conteúdo desta matéria
     ja_leu_algum = False
     for c in conteudos_da_materia:
-        if ja_visualizou_conteudo(usuario['nome'], c['titulo']):
+        if ja_visualizou_conteudo(usuario['cpf'], atividade['materia_id'], c['titulo']):
             ja_leu_algum = True
             break
+
     if not ja_leu_algum:
-        print("Você precisa estudar o conteúdo da matéria antes de fazer a atividade.")
+        print("\n⚠️ Você precisa estudar o conteúdo da matéria antes de fazer a atividade.")
+        input("Aperte Enter para voltar.")
         return
 
     # realizar a atividade

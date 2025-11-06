@@ -1,0 +1,15 @@
+[
+    {
+        "id": "0565b6f5",
+        "professor_cpf": "38630096910",
+        "nome": "Banco de dados",
+        "descricao": "Abordar topicos basicos e mais avançados",
+        "conteudos": [
+            {
+                "id": "622994ac",
+                "titulo": "CONTEÚDO DE APOIO - BANCO DE DADOS",
+                "texto": "COMANDOS SQL BÁSICOS: SELECT: Usado para consultar/recuperar dados de tabelas, INSERT INTO: Adiciona novos registros em uma tabela, UPDATE: Modifica registros existentes, DELETE: Remove registros da tabela."
+            }
+        ]
+    }
+]

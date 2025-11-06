@@ -8,6 +8,9 @@ USUARIOS_FILE = 'data/usuarios.json'
 TURMAS_FILE = 'data/turmas.json'
 MATERIAS_FILE = 'data/materias.json'
 
+# ---------------------------------------------------------------------
+# Funções genéricas
+# ---------------------------------------------------------------------
 def carregar_json(caminho):
     try:
         with open(caminho, 'r', encoding='utf-8') as f:
@@ -88,14 +91,38 @@ def gerar_relatorio_turma(professor_cpf):
     input("\nAperte Enter para voltar.")
 
 # ---------------------------------------------------------------------
-# RELATÓRIO DO ADMINISTRADOR
+# RELATÓRIO DA SECRETARIA (antigo ADM)
 # ---------------------------------------------------------------------
-def relatorio_administrador():
+def relatorio_secretaria(cpf_aluno=None):
     usuarios = carregar_json(USUARIOS_FILE)
     materias = carregar_json(MATERIAS_FILE)
     turmas = carregar_json(TURMAS_FILE)
     resultados = carregar_json(RESULTADOS_FILE)
 
+    if cpf_aluno:
+        aluno = next((u for u in usuarios if u.get('cpf') == cpf_aluno), None)
+        if not aluno:
+            print("Aluno não encontrado.")
+            input("\nAperte Enter para voltar.")
+            return
+
+        print(f"\n=== 📋 Relatório Individual do Aluno ===")
+        print(f"Nome: {aluno.get('nome')}")
+        print(f"CPF: {cpf_aluno}")
+        print(f"Perfil: {aluno.get('perfil')}\n")
+
+        notas = [
+            round((r['acertos'] / r['total']) * 10, 2)
+            for r in resultados if r['cpf'] == cpf_aluno and r.get('total', 0) > 0
+        ]
+        if notas:
+            print(f"Média geral do aluno: {round(mean(notas), 2)} / 10")
+        else:
+            print("Nenhum resultado encontrado para este aluno.")
+        input("\nAperte Enter para voltar.")
+        return
+
+    # Relatório geral
     total_usuarios = len(usuarios)
     total_alunos = sum(1 for u in usuarios if u.get('perfil') == 'Aluno')
     total_professores = sum(1 for u in usuarios if u.get('perfil') == 'Professor')
@@ -103,7 +130,7 @@ def relatorio_administrador():
     total_turmas = len(turmas)
     total_resultados = len(resultados)
 
-    print("\n=== 📊 Relatório Administrativo ===")
+    print("\n=== 🏫 Relatório da Secretaria ===")
     print(f"Usuários totais: {total_usuarios}")
     print(f"Alunos: {total_alunos}")
     print(f"Professores: {total_professores}")
@@ -119,10 +146,11 @@ def relatorio_administrador():
         print(f"Média geral de desempenho dos alunos: {round(mean(notas), 2)} / 10")
     else:
         print("Nenhuma atividade foi registrada ainda.")
+
     input("\nAperte Enter para voltar.")
 
 # ---------------------------------------------------------------------
-# RELATÓRIO DO ALUNO (já implementado antes)
+# RELATÓRIO DO ALUNO
 # ---------------------------------------------------------------------
 def exibir_relatorio_aluno(usuario):
     from services.quiz import carregar_resultados

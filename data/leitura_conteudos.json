@@ -1,34 +1,9 @@
 [
     {
-        "nome": "lele",
+        "cpf": "38630096810",
+        "materia_id": "0565b6f5",
         "conteudos_vistos": [
-            "Introdução à TI",
-            "Fundamentos da Programação",
-            "Boas Práticas de Segurança Digital",
-            "Soft Skils",
-            "oi",
-            "Video pim",
-            "Cibersegurança",
-            "teste"
-        ]
-    },
-    {
-        "nome": "Leandro",
-        "conteudos_vistos": [
-            "Fundamentos da Programação",
-            "Teste"
-        ]
-    },
-    {
-        "nome": "Pedro",
-        "conteudos_vistos": [
-            "Cibersegurança"
-        ]
-    },
-    {
-        "nome": "Leandrooo",
-        "conteudos_vistos": [
-            "Cibersegurança"
+            "CONTEÃšDO DE APOIO - BANCO DE DADOS"
         ]
     }
 ]

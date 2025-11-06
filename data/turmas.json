@@ -1,0 +1,12 @@
+[
+    {
+        "codigo": "TurmaBD",
+        "materia_id": "0565b6f5",
+        "materia_nome": "Banco de dados",
+        "professor_cpf": "38630096910",
+        "horario": "Seg 07:30-09:00",
+        "alunos": [
+            "38630096810"
+        ]
+    }
+]

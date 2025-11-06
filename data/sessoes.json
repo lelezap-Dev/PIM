@@ -334,5 +334,203 @@
         "inicio": "2025-10-16 09:58:53",
         "fim": null,
         "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-10-23 09:00:01",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-10-23 09:00:50",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "94557489591",
+        "inicio": "2025-10-23 09:05:20",
+        "fim": "2025-10-23 09:06:56",
+        "duracao_minutos": 1.6
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-10-28 20:24:24",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-10-28 20:24:48",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-10-28 20:26:26",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-10-28 20:27:34",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-10-28 20:28:45",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-10-28 20:29:30",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-10-28 20:30:48",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-10-29 20:39:19",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-10-29 20:43:08",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-10-29 20:45:01",
+        "fim": "2025-10-29 20:45:57",
+        "duracao_minutos": 0.95
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-10-29 20:57:32",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-10-29 20:58:45",
+        "fim": "2025-10-29 21:02:06",
+        "duracao_minutos": 3.36
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-11-04 09:48:33",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-11-04 09:49:09",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-11-05 07:36:11",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-11-05 07:37:52",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-11-05 07:38:38",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-11-05 08:30:32",
+        "fim": "2025-11-05 08:43:37",
+        "duracao_minutos": 13.08
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-11-05 08:44:41",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-11-05 09:06:41",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-11-05 09:07:30",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-11-06 09:06:34",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-11-06 09:23:14",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096910",
+        "inicio": "2025-11-06 09:51:12",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096710",
+        "inicio": "2025-11-06 10:01:09",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-11-06 10:03:30",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-11-06 10:04:14",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-11-06 10:13:46",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-11-06 10:16:02",
+        "fim": null,
+        "duracao_minutos": null
+    },
+    {
+        "cpf": "38630096810",
+        "inicio": "2025-11-06 10:27:47",
+        "fim": null,
+        "duracao_minutos": null
     }
 ]

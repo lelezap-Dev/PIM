@@ -1,77 +1,155 @@
 # ======= services/graficos.py =======
+import json
+import os
 import matplotlib.pyplot as plt
-from services.quiz import carregar_resultados
-from services.usuarios import carregar_usuarios
-from collections import defaultdict
-import statistics
 
-def gerar_grafico_media_usuarios():
-    resultados = carregar_resultados()
-    usuarios = carregar_usuarios()
+DATA_DIR = "data"
+ATIVIDADES_FILE = os.path.join(DATA_DIR, "atividades.json")
+RESULTADOS_FILE = os.path.join(DATA_DIR, "resultados.json")
+USUARIOS_FILE = os.path.join(DATA_DIR, "usuarios.json")
+MATERIAS_FILE = os.path.join(DATA_DIR, "materias.json")
 
-    if not resultados:
-        print("Nenhum dado disponível para gerar gráfico.")
-        return
-
-    nomes_usuarios = {u['cpf']: u['nome'] for u in usuarios}
-    dados = defaultdict(list)
-    for r in resultados:
-        dados[nomes_usuarios.get(r['cpf'], r['cpf'])].append(r['acertos'])
-
-    labels = list(dados.keys())
-    medias = [round(sum(v)/len(v), 2) for v in dados.values()]
-    todas_as_notas = [nota for sublist in dados.values() for nota in sublist]
-
-    # Calcular moda, média e mediana geral
-    media_geral = round(statistics.mean(todas_as_notas), 2)
+# -----------------------
+# Funções auxiliares
+# -----------------------
+def carregar_json(caminho):
+    """Lê um arquivo JSON e retorna uma lista vazia em caso de erro."""
     try:
-        moda_geral = statistics.mode(todas_as_notas)
-    except statistics.StatisticsError:
-        moda_geral = 'Sem moda única'
-    mediana_geral = statistics.median(todas_as_notas)
+        with open(caminho, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return []
 
-    plt.figure(figsize=(10,6))
-    plt.bar(labels, medias, color='skyblue')
-    plt.xlabel('Usuário')
-    plt.ylabel('Média de Acertos')
-    plt.title(f'Média | Moda: {moda_geral} | Mediana: {mediana_geral}')
-    plt.xticks(rotation=45)
+
+# -----------------------
+# 1️⃣ Gráfico de Médias por Matéria (Secretaria)
+# -----------------------
+def exibir_grafico_medias_materias():
+    """
+    Mostra um gráfico com a média de desempenho dos alunos por matéria.
+    """
+    atividades = carregar_json(ATIVIDADES_FILE)
+    resultados = carregar_json(RESULTADOS_FILE)
+
+    if not atividades or not resultados:
+        print("⚠️ Não há dados suficientes para gerar o gráfico.")
+        input("\nPressione Enter para voltar.")
+        return
+
+    medias = {}
+    for resultado in resultados:
+        materia_id = resultado.get("materia_id")
+        acertos = resultado.get("acertos", 0)
+        total = resultado.get("total_perguntas") or resultado.get("total", 1)
+        perc = acertos / total * 100 if total > 0 else 0
+
+        materia = next((a for a in atividades if a.get("materia_id") == materia_id), None)
+        if not materia:
+            continue
+        nome_materia = materia.get("materia_nome", "Desconhecida")
+
+        medias.setdefault(nome_materia, []).append(perc)
+
+    if not medias:
+        print("Nenhuma média encontrada.")
+        input("\nPressione Enter para voltar.")
+        return
+
+    nomes = list(medias.keys())
+    valores = [sum(lista) / len(lista) for lista in medias.values()]
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(nomes, valores, color="royalblue")
+    plt.title("📊 Média de Desempenho por Matéria")
+    plt.ylabel("Média de Acertos (%)")
+    plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.show()
 
-def gerar_grafico_distribuicao():
-    resultados = carregar_resultados()
-    if not resultados:
-        print("Nenhum dado disponível.")
+
+# -----------------------
+# 2️⃣ Gráfico de Desempenho Individual (Aluno)
+# -----------------------
+def exibir_grafico_desempenho_aluno(cpf_aluno):
+    """
+    Mostra o desempenho de um aluno (porcentagem de acertos por matéria).
+    """
+    resultados = carregar_json(RESULTADOS_FILE)
+    atividades = carregar_json(ATIVIDADES_FILE)
+
+    aluno_resultados = [r for r in resultados if r.get("cpf") == cpf_aluno]
+    if not aluno_resultados:
+        print("Nenhum resultado encontrado para este aluno.")
+        input("\nPressione Enter para voltar.")
         return
 
-    acertos = [r['acertos'] for r in resultados]
-    plt.figure(figsize=(8,6))
-    plt.hist(acertos, bins=range(min(acertos), max(acertos)+2), color='orange', edgecolor='black')
-    plt.xlabel('Número de Acertos')
-    plt.ylabel('Frequência')
-    plt.title('Distribuição de Acertos')
+    materias = {}
+    for r in aluno_resultados:
+        materia_id = r.get("materia_id")
+        acertos = r.get("acertos", 0)
+        total = r.get("total_perguntas") or r.get("total", 1)
+        perc = acertos / total * 100 if total > 0 else 0
+
+        materia = next((a for a in atividades if a.get("materia_id") == materia_id), None)
+        nome_materia = materia.get("materia_nome", "Desconhecida") if materia else "Desconhecida"
+
+        materias.setdefault(nome_materia, []).append(perc)
+
+    nomes = list(materias.keys())
+    valores = [sum(lista) / len(lista) for lista in materias.values()]
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(nomes, valores, color='skyblue')
+    plt.title("📈 Desempenho Individual por Matéria")
+    plt.ylabel("Acertos (%)")
+    plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.show()
 
-def gerar_grafico_por_conteudo():
-    resultados = carregar_resultados()
+
+# -----------------------
+# 3️⃣ Gráfico de Ranking (Geral)
+# -----------------------
+def exibir_grafico_ranking():
+    """
+    Mostra o ranking dos alunos com base nas médias gerais de desempenho.
+    """
+    resultados = carregar_json(RESULTADOS_FILE)
+    usuarios = carregar_json(USUARIOS_FILE)
+
     if not resultados:
-        print("Nenhum dado disponível.")
+        print("Nenhum resultado disponível.")
+        input("\nPressione Enter para voltar.")
         return
 
-    conteudos = defaultdict(list)
+    medias_alunos = {}
     for r in resultados:
-        conteudos[r['conteudo']].append(r['acertos'])
+        cpf = r.get("cpf")
+        acertos = r.get("acertos", 0)
+        total = r.get("total_perguntas") or r.get("total", 1)
+        perc = acertos / total * 100 if total > 0 else 0
+        medias_alunos.setdefault(cpf, []).append(perc)
 
-    labels = list(conteudos.keys())
-    medias = [statistics.mean(v) for v in conteudos.values()]
+    if not medias_alunos:
+        print("Nenhum dado encontrado.")
+        input("\nPressione Enter para voltar.")
+        return
 
-    plt.figure(figsize=(10,6))
-    plt.bar(labels, medias, color='lightgreen')
-    plt.xlabel('Conteúdo')
-    plt.ylabel('Média de Acertos')
-    plt.title('Desempenho Médio por Conteúdo')
-    plt.xticks(rotation=45)
+    nomes, valores = [], []
+    for cpf, lista in medias_alunos.items():
+        usuario = next((u for u in usuarios if u.get("cpf") == cpf), None)
+        nome = usuario.get("nome") if usuario else cpf
+        nomes.append(nome)
+        valores.append(sum(lista) / len(lista))
+
+    # Ordenar ranking e limitar ao top 10
+    dados = sorted(zip(nomes, valores), key=lambda x: x[1], reverse=True)[:10]
+    nomes, valores = zip(*dados)
+
+    plt.figure(figsize=(9, 5))
+    plt.barh(nomes, valores, color='gold')
+    plt.title("🏆 Ranking de Alunos - Top 10")
+    plt.xlabel("Média Geral (%)")
+    plt.gca().invert_yaxis()
     plt.tight_layout()
     plt.show()
