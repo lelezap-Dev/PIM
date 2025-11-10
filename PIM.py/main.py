@@ -47,7 +47,12 @@ def menu_aluno(usuario):
         elif opcao == '4':
             exibir_relatorio_aluno(usuario)
         elif opcao == '5':
+            from services.sessoes import registrar_logout
+            registrar_logout(usuario['cpf'])
+            print("Logout registrado. Voltando ao menu principal...")
+            time.sleep(0.6)
             break
+            
         else:
             print("Opção inválida.")
         
@@ -223,8 +228,10 @@ def menu_professor(usuario):
 
         # === SAIR ===
         elif opcao == '5':
-            print("Saindo do menu do professor...")
-            time.sleep(1)
+            from services.sessoes import registrar_logout
+            registrar_logout(usuario['cpf'])
+            print("Logout registrado. Saindo do menu do professor...")
+            time.sleep(0.6)
             break
 
         else:
@@ -294,7 +301,9 @@ def menu_secretaria(usuario):
         print("2. Matricular aluno em matéria/turma")
         print("3. Visualizar relatórios")
         print("4. Visualizar gráficos de desempenho")
-        print("5. Voltar ao menu principal")
+        print("5. Histórico de sessões de usuários")
+        print("6. Voltar ao menu principal")
+
 
         opcao = input("Escolha: ").strip()
 
@@ -385,8 +394,13 @@ def menu_secretaria(usuario):
                 continue
             else:
                 print("Opção inválida.")
-
+                
         elif opcao == "5":
+            from services.sessoes import exibir_todas_sessoes
+            exibir_todas_sessoes()
+            input("\nPressione Enter para voltar.")
+
+        elif opcao == "6":
             print("Voltando ao menu principal...")
             break
 
@@ -408,7 +422,7 @@ if __name__ == '__main__':
         elif escolha == '2':
             usuario = autenticar()
             if usuario:
-                registrar_login(usuario['cpf'])
+                registrar_login(usuario['cpf'], usuario.get('nome',''))
                 if usuario['perfil'] == 'Aluno':
                     menu_aluno(usuario)
                 elif usuario['perfil'] == 'Secretaria':

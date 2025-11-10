@@ -36,13 +36,6 @@
         "perfil": "Aluno"
     },
     {
-        "cpf": "99999999999",
-        "nome": "bizantino",
-        "email": "biza@slk.com",
-        "senha": "$2b$12$3ue4gEA8mWIV.DQjAKrDUeqcNsTHXCSynOMiQ/BV/UXb.Sqx67ph.",
-        "perfil": "Secretaria"
-    },
-    {
         "cpf": "88888888888",
         "nome": "adminzin",
         "email": "lele@g.com",
@@ -187,8 +180,80 @@
         "cpf": "38630096610",
         "nome": "teste",
         "email": "pol@g.com",
-        "senha": "$2b$12$skJFCceAzcgEU6/VStj7pulP68xTYbNoNMeNtNypWSD7OV9i3UBe6",
+        "senha": "$2b$12$B5OgHvLRN.XMYoke8ndY7.7hrz7GKoKtoMmnblU/e2Nb86UFASrS6",
         "perfil": "Aluno",
         "palavra_chave": "teste"
+    },
+    {
+        "cpf": "38630096510",
+        "nome": "Ambrosio",
+        "email": "amb@g.com",
+        "senha": "$2b$12$VWo7m1yHxE2sNo0facDbuuRv5Um9Z9sewyugTHrOaeZnqw1tAvw1K",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "38630096410",
+        "nome": "Nava",
+        "email": "nava@g.com",
+        "senha": "$2b$12$ghulrJHmOAsYD8tUmc3tgeaZcvSXuylTwFYOBc5xCORuDm.1Es4Ry",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "38630096310",
+        "nome": "Safira",
+        "email": "Safi@g.com",
+        "senha": "$2b$12$xu0b4pZVf2zF18UX5veUx.umOMaiNbXuAQSyLFBMQnh0ub2RLr/vC",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "38630096210",
+        "nome": "Vitoria",
+        "email": "vi@g.com",
+        "senha": "$2b$12$jfCAyf/AopgxrxMkDuvTu.JnV.8jPT1fV2Zqms9EpWjrd7Cyw.MPO",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "38630096110",
+        "nome": "Samuca",
+        "email": "samuca@g.com",
+        "senha": "$2b$12$NlQEfYw3JiVd67rpIGgyauSWIeV/BCv/LK2W/ykbLJ.Cv3la2HLAm",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "94557489991",
+        "nome": "Bruno",
+        "email": "Bruno@g.com",
+        "senha": "$2b$12$x6GGHc6Twg9i7PzRHQtatux7.P2qE36IbzDsTDwNoI4ILWbUJiKSa",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "94557489891",
+        "nome": "Lucas",
+        "email": "lucas@g.com",
+        "senha": "$2b$12$HjIhd3FVFPjix6nhVOjILeCD//gsuCQhOMUmGwSzLw7C4r5BM6PCe",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "94557489791",
+        "nome": "Felipe",
+        "email": "f@g.com",
+        "senha": "$2b$12$ghwUum/E5KMb34MBIRwsoe2u7RJRWXuYTkzmj8syRuETeY/clRis.",
+        "perfil": "Aluno",
+        "palavra_chave": "teste"
+    },
+    {
+        "cpf": "94557489593",
+        "nome": "Claudio Boghi",
+        "email": "professor@gmail.com",
+        "senha": "$2b$12$BUqOoqSHb7rOTk4KK/CZzuMlIf9i.Vx9oHqmppMGGR0okeWNV6k/W",
+        "perfil": "Professor",
+        "palavra_chave": "PIM"
     }
 ]
